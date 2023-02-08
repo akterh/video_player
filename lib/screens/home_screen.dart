@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:task_app/provider/video_provider.dart';
 import 'package:task_app/utils/colors.dart';
 import 'package:intl/intl.dart';
+import 'package:video_player/video_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,6 +14,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  VideoPlayerController? _controller;
+  final GlobalKey _key = GlobalKey();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,25 +81,57 @@ class _HomePageState extends State<HomePage> {
                                   Text(providerSnapshot
                                       .videoData.data![index].caption
                                       .toString()),
-                                  Text(DateFormat('yyyy-MM-dd – kk:mm').format(providerSnapshot.videoData.data![index].createdAt!)),
+                                  Text(DateFormat('yyyy-MM-dd – kk:mm').format(
+                                      providerSnapshot
+                                          .videoData.data![index].createdAt!)),
                                   const Spacer(),
                                   Container(
                                     height: MediaQuery.of(context).size.height *
                                         .25,
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
-                                        color: Colors.amberAccent,
                                         borderRadius:
                                             BorderRadius.circular(20)),
-                                    child: Center(
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            ColorResource.whiteColor,
-                                        child: IconButton(
-                                          icon: const Icon(Icons.play_arrow),
-                                          onPressed: () {},
+                                    child: Stack(
+                                      children: [
+                                       _controller!=null? VideoPlayer(_controller!):const SizedBox(),
+                                        Positioned(
+                                          top: 50,
+                                          left: 100,
+                                          child:
+                                               CircleAvatar(
+                                                  backgroundColor:
+                                                      ColorResource.whiteColor,
+                                                  child: IconButton(
+                                                    icon:providerSnapshot.playState ==
+                                                        "pause"? const Icon(
+                                                        Icons.play_arrow):const Icon(Icons.pause),
+                                                    onPressed: () {
+                                                      _controller = VideoPlayerController.network(
+                                                          providerSnapshot.videoData.data![index].videoUrl!)
+                                                        ..initialize();
+                                                      _controller!
+                                                              .value.isPlaying
+                                                          ? _controller!.pause()
+                                                          : _controller!.play();
+                                                      Provider.of<VideoProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .getVideoPlayingState(
+                                                              _controller!.value
+                                                                      .isInitialized
+                                                                  ? "initialize"
+                                                                  : _controller!
+                                                                          .value
+                                                                          .isPlaying
+                                                                      ? "playing"
+                                                                      : "pause");
+                                                    },
+                                                  ),
+                                                )
+
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   )
                                 ],
