@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_app/provider/video_provider.dart';
 import '../screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+      MultiProvider(providers: [
+        ChangeNotifierProvider(create: (context) => VideoProvider()),
+      ],
+      child: const MyApp(),)
+      );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
