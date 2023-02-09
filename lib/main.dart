@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_app/provider/video_player_provider.dart';
 import 'package:task_app/provider/video_provider.dart';
 import '../screens/home_screen.dart';
 
@@ -7,6 +8,7 @@ void main() {
   runApp(
       MultiProvider(providers: [
         ChangeNotifierProvider(create: (context) => VideoProvider()),
+        ChangeNotifierProvider(create: (context) => VideoPlayerProvider()),
       ],
       child: const MyApp(),)
       );

@@ -92,47 +92,7 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20)),
-                                    child: Stack(
-                                      children: [
-                                       _controller!=null? VideoPlayer(_controller!):const SizedBox(),
-                                        Positioned(
-                                          top: 50,
-                                          left: 100,
-                                          child:
-                                               CircleAvatar(
-                                                  backgroundColor:
-                                                      ColorResource.whiteColor,
-                                                  child: IconButton(
-                                                    icon:providerSnapshot.playState ==
-                                                        "pause"? const Icon(
-                                                        Icons.play_arrow):const Icon(Icons.pause),
-                                                    onPressed: () {
-                                                      _controller = VideoPlayerController.network(
-                                                          providerSnapshot.videoData.data![index].videoUrl!)
-                                                        ..initialize();
-                                                      _controller!
-                                                              .value.isPlaying
-                                                          ? _controller!.pause()
-                                                          : _controller!.play();
-                                                      Provider.of<VideoProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .getVideoPlayingState(
-                                                              _controller!.value
-                                                                      .isInitialized
-                                                                  ? "initialize"
-                                                                  : _controller!
-                                                                          .value
-                                                                          .isPlaying
-                                                                      ? "playing"
-                                                                      : "pause");
-                                                    },
-                                                  ),
-                                                )
-
-                                        ),
-                                      ],
-                                    ),
+                                    child: Center(child: IconButton(icon: const Icon(Icons.play_arrow), onPressed: () {  },),),
                                   )
                                 ],
                               ),
