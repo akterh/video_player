@@ -14,8 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  VideoPlayerController? _controller;
-  final GlobalKey _key = GlobalKey();
+  int? _clickedIndex;
 
   @override
   void initState() {
@@ -53,8 +52,8 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Consumer<VideoProvider>(
-            builder: (_, providerSnapshot, child) {
-              return providerSnapshot.videoData.data == null
+            builder: (_, videoDataProviderSnapshot, child) {
+              return videoDataProviderSnapshot.controller == null
                   ? const Center(
                       child: SizedBox(
                           height: 40,
@@ -62,7 +61,8 @@ class _HomePageState extends State<HomePage> {
                           child: CircularProgressIndicator()))
                   : ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: 5,
+                      itemCount:
+                          videoDataProviderSnapshot.videoData.data!.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -78,22 +78,46 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(providerSnapshot
+                                  Text(videoDataProviderSnapshot
                                       .videoData.data![index].caption
                                       .toString()),
                                   Text(DateFormat('yyyy-MM-dd – kk:mm').format(
-                                      providerSnapshot
+                                      videoDataProviderSnapshot
                                           .videoData.data![index].createdAt!)),
                                   const Spacer(),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        .25,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Center(child: IconButton(icon: const Icon(Icons.play_arrow), onPressed: () {  },),),
-                                  )
+                                Stack(
+                                  children: [
+                                    AspectRatio(
+                                        aspectRatio: 10 / 6,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(15),
+                                          child: VideoPlayer(
+                                              videoDataProviderSnapshot
+                                                  .controller![index]),
+                                        )),
+                                    Positioned(
+                                      child: CircleAvatar(backgroundColor: Colors.white,
+                                        child: IconButton(
+                                          icon:videoDataProviderSnapshot
+                                              .isPlaying? const Icon(Icons.pause):const Icon(Icons.play_arrow),
+                                          onPressed: () {
+                                            Provider.of<VideoProvider>(context,listen: false).getVideoPlayingState(videoDataProviderSnapshot
+                                                .controller![index]
+                                                .value
+                                                .isPlaying);
+                                            videoDataProviderSnapshot.controller![index].value.isPlaying
+                                                ? videoDataProviderSnapshot
+                                                .controller![index]
+                                                .pause()
+                                                : videoDataProviderSnapshot
+                                                .controller![index].play();
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
                                 ],
                               ),
                             ),
