@@ -34,18 +34,24 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: ColorResource.blackColor),
         ),
         centerTitle: true,
-        leading: const CircleAvatar(
-          backgroundColor: ColorResource.primaryColor,
-          child: Icon(
-            Icons.camera_alt_outlined,
-            color: ColorResource.blackColor,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: const CircleAvatar(
+            backgroundColor: ColorResource.primaryColor,
+            child: Icon(
+              Icons.camera_alt_outlined,
+              color: ColorResource.blackColor,
+            ),
           ),
         ),
         actions: const [
-          CircleAvatar(
-            backgroundColor: ColorResource.primaryColor,
-            child: Icon(Icons.notifications_active,
-                color: ColorResource.blackColor),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: ColorResource.primaryColor,
+              child: Icon(Icons.notifications_active,
+                  color: ColorResource.blackColor),
+            ),
           )
         ],
       ),
@@ -78,46 +84,69 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(videoDataProviderSnapshot
-                                      .videoData.data![index].caption
-                                      .toString()),
-                                  Text(DateFormat('yyyy-MM-dd – kk:mm').format(
-                                      videoDataProviderSnapshot
-                                          .videoData.data![index].createdAt!)),
+                                  Text(
+                                    videoDataProviderSnapshot
+                                        .videoData.data![index].caption
+                                        .toString(),
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Text(
+                                      DateFormat('hh:mm a').format(
+                                          videoDataProviderSnapshot.videoData
+                                              .data![index].createdAt!),
+                                      style: TextStyle(fontSize: 18)),
                                   const Spacer(),
-                                Stack(
-                                  children: [
-                                    AspectRatio(
-                                        aspectRatio: 10 / 6,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(15),
-                                          child: VideoPlayer(
-                                              videoDataProviderSnapshot
-                                                  .controller![index]),
-                                        )),
-                                    Positioned(
-                                      child: CircleAvatar(backgroundColor: Colors.white,
-                                        child: IconButton(
-                                          icon:videoDataProviderSnapshot
-                                              .isPlaying? const Icon(Icons.pause):const Icon(Icons.play_arrow),
-                                          onPressed: () {
-                                            Provider.of<VideoProvider>(context,listen: false).getVideoPlayingState(videoDataProviderSnapshot
-                                                .controller![index]
-                                                .value
-                                                .isPlaying);
-                                            videoDataProviderSnapshot.controller![index].value.isPlaying
-                                                ? videoDataProviderSnapshot
-                                                .controller![index]
-                                                .pause()
-                                                : videoDataProviderSnapshot
-                                                .controller![index].play();
-                                          },
+                                  Stack(
+                                    children: [
+                                      AspectRatio(
+                                          aspectRatio: 10 / 6,
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              child:
+                                                  // Provider.of<VideoProvider>(
+                                                  //             context,
+                                                  //             listen: false)
+                                                  //         .isPlayingVideo(index)
+                                                  //     ?
+                                                  VideoPlayer(
+                                                      videoDataProviderSnapshot
+                                                          .controller![index])
+                                              // : Container(
+                                              //     decoration: BoxDecoration(
+                                              //       image: DecorationImage(image:NetworkImage("https://images.pexels.com/photos/2899097/pexels-photo-2899097.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),fit: BoxFit.cover),
+                                              //         borderRadius:
+                                              //             BorderRadius
+                                              //                 .circular(15)),
+                                              //   ),
+                                              )),
+                                      Positioned(
+                                        left:
+                                            MediaQuery.of(context).size.width /
+                                                2.5,
+                                        top:
+                                            MediaQuery.of(context).size.height /
+                                                10,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          child: IconButton(
+                                            icon: Provider.of<VideoProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .isPlayingVideo(index)
+                                                ? const Icon(Icons.pause)
+                                                : const Icon(Icons.play_arrow),
+                                            onPressed: () {
+                                              Provider.of<VideoProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .getPlayVideo(index);
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                )
+                                      )
+                                    ],
+                                  )
                                 ],
                               ),
                             ),

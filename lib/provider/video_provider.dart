@@ -8,6 +8,7 @@ class VideoProvider extends ChangeNotifier {
   VideoModel _videoData = VideoModel();
   List<VideoPlayerController>? _controller;
   bool _isPlaying = false;
+  int _currentIndex = -1;
 
   VideoModel get videoData => _videoData;
 
@@ -28,15 +29,25 @@ class VideoProvider extends ChangeNotifier {
       controllerList.add(
           VideoPlayerController.network(videoData.data![i].videoUrl!)
             ..initialize());
-      print(
-          "source name${VideoPlayerController.network(videoData.data![i].videoUrl!).dataSourceType.name}");
     }
     _controller = controllerList;
     notifyListeners();
   }
 
-  void getVideoPlayingState(bool state) {
-    _isPlaying = state;
+  bool isPlayingVideo(index) {
+    return _currentIndex == index;
+  }
+
+  void getPlayVideo(int index) {
+    if(_currentIndex!=index){
+      _currentIndex = index;
+    }else{
+      _currentIndex=-1;
+    }
+    controller![index].value.isPlaying
+        ? controller![index].pause()
+        : controller![index].play();
     notifyListeners();
   }
+
 }
